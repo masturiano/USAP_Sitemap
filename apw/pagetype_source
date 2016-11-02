@@ -1,0 +1,313 @@
+
+Acknowledged
+From: Wilson Abesamis
+Sent: Wednesday, September 28, 2016 12:10 AM
+To: DG Team Market Engineering Core; Esperanza Lomat
+Subject: Re: [APW] SEO Page Types for Sitemap Generator
+
+
+Please see the technical details and credentials for the following data source
+
+PIMCORE
+
+    HOSTS: cssoastagfe02
+    DATABASE: dbSEOPAGCONCMS
+    USER: hydra
+    PASSWORD: XD56JK45
+    PORT: 3306
+
+          How to get the seo pages list by page type:
+           mysql -uhydra -p --host cssoastagfe02
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/part/'; = 3547 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/brand/'; = 1053 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/make/'; = 63 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/brand_part/'; = 14063 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/make_model_part/'; = 489660 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/make_part/'; = 36744 Records
+           SELECT `key` FROM dbSEOPAGCONCMS.documents WHERE path = '/make_model/'; = 1904 Records
+
+SELECT 
+    count(*) as `count`
+FROM 
+    dbSEOPAGCONCMS.documents 
+WHERE path = '/part/';           
+
+SELECT * FROM dbSEOPAGCONCMS.documents WHERE path = '/part/' and parentId = 30 limit 1 \G;
+SELECT * FROM dbSEOPAGCONCMS.documents WHERE path = '/make_model_part/' and parentId = 30  limit 1 \G;
+
+MONGO
+
+    HOSTS: cssoastagfe02
+    DATABASE: seo
+    COLLECTIONS:
+    USER:
+    PASSWORD:
+    PORT: 27120 or identify the port in the admin panel below
+
+    How to get the ymmp list:
+    mongo --host cssoastagfe02 --port 27120;
+    use seo;
+    db.article.find({"site":"www.autopartswarehouse.com","page_type": "ymmp"},{"uri":1}); = 560283 Records
+
+560283
+350000
+
+MONGO ADMIN PANEL
+
+    http://rockmongo.usautoparts.com/index.php?action=admin.index&host=1
+    USER: admin
+    PASSWORD: admin
+
+
+
+
+Function to generate Pimcore Key, you need to reverse engineer the code to produce apw url.
+
+    function generateKey($urlParts){
+
+        $urlParts = explode('/',$url);
+
+        $make = strtolower($urlParts[3]);
+        $model = strtolower(str_replace('.html','',$urlParts[4]));
+        $part = strtolower($urlParts[2]);
+
+        $makeKey = encodePimcoreKeyPartial($make);
+        $modelKey = encodePimcoreKeyPartial($model);
+        $partKey = encodePimcoreKeyPartial($part);
+
+        $encodedNames = array($makeKey, $modelKey, $partKey);
+        $key = implode('~', $encodedNames).'.html';
+        $search = array("/","-and-"," ");
+        $replace = array("-fs-","-am-","_");
+        $key = strtolower(str_replace($search, $replace, $key));
+
+        return $key;
+    }
+
+
+    function encodePimcoreKeyPartial($name,$noplural=null) {
+
+            $find = array("/","&"," ","ac_");
+            $replace = array("-fs-","-am-","_","a-fs-c_");
+            $nameKey = str_replace($find, $replace, $name);
+
+
+            return $nameKey;
+        }
+
+
+
+
+
+On 09/28/2016 02:20 PM, Wilson Abesamis wrote:
+>
+> I will provide the technical details of the data source to ME Team,
+>
+>
+> Page Types 	URL 	Data Source
+> Home Page 	http://www.autopartswarehouse.com/ 	None
+> SEO Brand Page 	http://www.autopartswarehouse.com/shop_brands/injen.html 	PIMCORE
+> SEO Make Page 	http://www.autopartswarehouse.com/nissan~rep.html 	PIMCORE
+> SEO Part Page 	http://www.autopartswarehouse.com/auxiliary_water_pump~pop.html 	PIMCORE
+> SEO Brand Part Page 	http://www.autopartswarehouse.com/shop_brands/reese/hitch.html 	PIMCORE
+> SEO Make Model Page 	http://www.autopartswarehouse.com/models/plymouth~acclaim~makemodel.html 	PIMCORE
+> SEO Make Part - Shop Parts 	http://www.autopartswarehouse.com/shop_parts/brake_disc/infiniti.html 	PIMCORE
+> SEO Make Model Part - Shop Parts 	http://www.autopartswarehouse.com/shop_parts/step_bumper/dodge/dakota.html 	PIMCORE
+> Product Detail Page (SKU) 	http://www.autopartswarehouse.com/sku/Replacement/Exhaust_Manifold/ARBD960701.html 	PLDB
+> SEO YMMP 	http://www.autopartswarehouse.com/shop_years/ford-f-150-automatic-transmission-filter-1998.html 	MONGO
+>
+>
+>
+> On 09/28/2016 10:54 AM, Wilson Abesamis wrote:
+>>
+>> Thanks for the reminder, i will provide the partial data source EOD.
+>>
+>> On 09/28/2016 10:34 AM, Darish Bianca Celeste wrote:
+>>> Hi Sir Wilson,
+>>>
+>>> Would just like to remind you to send us the data source for APW.
+>>>
+>>> Thanks,
+>>> Darish
+>>> From: Wilson Abesamis
+>>> Sent: Friday, September 23, 2016 3:31 PM
+>>> To: Jose Paolo Bierra; DG Team ECOM Dev Leads Core
+>>> Cc: Darish Bianca Celeste; Marilou Moreno; Reiniel Ronquillo; Richmond Nicasio; Joel O. Monilla I
+>>> Subject: Re: [APW] SEO Page Types for Sitemap Generator
+>>>
+>>> Thanks Pao,
+>>>
+>>> We'll provide the details of data source of these page types early next week.
+>>>
+>>>
+>>> Thanks,
+>>>
+>>> WIlson
+>>>
+>>> On 09/23/2016 02:19 PM, Jose Paolo Bierra wrote:
+>>>>
+>>>> Hello.
+>>>>
+>>>>  
+>>>>
+>>>> Here is the sample URL for APW sitemap generator project.
+>>>>
+>>>>  
+>>>>
+>>>> Page Types
+>>>> 	
+>>>>
+>>>> URL
+>>>>
+>>>> Home Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/
+>>>>
+>>>> SEO Brand Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/shop_brands/injen.html
+>>>>
+>>>> SEO Make Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/nissan~rep.html
+>>>>
+>>>> SEO Part Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/auxiliary_water_pump~pop.html
+>>>>
+>>>> SEO Brand Part Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/shop_brands/reese/hitch.html
+>>>>
+>>>> SEO Make Model Page
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/models/plymouth~acclaim~makemodel.html
+>>>>
+>>>> SEO Make Part - Shop Parts
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/shop_parts/brake_disc/infiniti.html
+>>>>
+>>>> SEO Make Model Part - Shop Parts
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/shop_parts/step_bumper/dodge/dakota.html
+>>>>
+>>>> Product Detail Page (SKU)
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/sku/Replacement/Exhaust_Manifold/ARBD960701.html
+>>>>
+>>>> SEO YMMP
+>>>> 	
+>>>>
+>>>> http://www.autopartswarehouse.com/shop_years/ford-f-150-automatic-transmission-filter-1998.html
+>>>>
+>>>>  
+>>>>
+>>>> Let me know if you have questions.
+>>>>
+>>>>  
+>>>>
+>>>> Thanks!
+>>>>
+>>>>  
+>>>>
+>>>> Jose Paolo Bierra | SEO Project Manager
+>>>>
+>>>> US Auto Parts Network Philippines, Inc.
+>>>>
+>>>> www.usautoparts.com.ph
+>>>>
+>>>>  
+>>>>
+>>>> Mobile: +63-905-401-1367
+>>>>
+>>>> Email: jpbierra@usautoparts.com  
+>>>>
+>>>> YM: paolo_8882000
+>>>>
+>>>>  
+>>>
+>>> -- 
+>>> Regards,
+>>>
+>>> Abesamis, Wilson L.
+>>> U.S. Auto Parts Network, Inc. (Phils.)
+>>> 9th. Flr. Robinsons Cybergate Plaza, EDSA Corner Robinsons Drive
+>>> Mandaluyong City 1554, Philippines
+>>> Mobile: +639228656711
+>>> YM: wlabesamis_usap/wilson_abesamis_usap 
+>>
+>> -- 
+>> Regards,
+>>
+>> Abesamis, Wilson L.
+>> U.S. Auto Parts Network, Inc. (Phils.)
+>> 9th. Flr. Robinsons Cybergate Plaza, EDSA Corner Robinsons Drive
+>> Mandaluyong City 1554, Philippines
+>> Mobile: +639228656711
+>> YM: wlabesamis_usap/wilson_abesamis_usap 
+>
+> -- 
+> Regards,
+>
+> Abesamis, Wilson L.
+> U.S. Auto Parts Network, Inc. (Phils.)
+> 9th. Flr. Robinsons Cybergate Plaza, EDSA Corner Robinsons Drive
+> Mandaluyong City 1554, Philippines
+> Mobile: +639228656711
+> YM: wlabesamis_usap/wilson_abesamis_usap 
+
+-- 
+Regards,
+
+Abesamis, Wilson L.
+U.S. Auto Parts Network, Inc. (Phils.)
+9th. Flr. Robinsons Cybergate Plaza, EDSA Corner Robinsons Drive
+Mandaluyong City 1554, Philippines
+Mobile: +639228656711
+YM: wlabesamis_usap/wilson_abesamis_usap 
+
+====================================================================================================
+
+Esperanza Lomat [3:12 AM]  
+service.db.read.mysql.host = blackwood.perfectfitgroup.local
+service.db.read.mysql.dbname = ProductLookupDb_merge
+service.db.read.mysql.username = tools
+service.db.read.mysql.password = tools1q2w
+
+table = products
+
+[3:13]  
+WHERE p.publish_channel_id IN
+       (
+               SELECT pubCh.compatible_publish_channel_id FROM usap_feeds5.tmp_publishChannels pubCh
+               WHERE pubCh.publish_channel_id = 1
+       )
+       and isactive = 1
+
+Mydel-Ar Asturiano [3:17 AM]
+
+
+publish_channel_id
+1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63
+
+====================================================================================================
+
+format for sku : /sku/[brand]/[part]/[mfr#].html
+
+brand_code
+brand_id
+
+part_id
+
+sku
+
+mfr#

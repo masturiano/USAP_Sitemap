@@ -1,0 +1,45 @@
+========================================
+===== Add sitemap generator module =====
+========================================
+
+Database : mongo
+Database name : folpindo_usaptool
+
+USAPTool Instance : http://me.usaptool.dev.usautoparts.com/
+	
+	# Menu information
+		
+		# USAP Tool
+		/var/www/html/me.usaptool.dev.usautoparts.com_git/library/USAP/Module/Info.php = class USAP_Module_Info
+		
+		# DCMS
+		/var/www/html/Dcms_ell/models/Info.php = DCMS
+
+	# USAP Tool action
+	/var/www/html/me.usaptool.dev.usautoparts.com_git/library/USAP/Controller/Action.php
+
+	# USAP Tool Bootstrap
+	/var/www/html/me.usaptool.dev.usautoparts.com_git/application/Bootstrap.php
+	
+	# Symlink for Folder of programs 
+	/var/www/html/me.usaptool.dev.usautoparts.com_git/application/external/modules
+	
+	# Layout of menu
+	/var/www/html/me.usaptool.dev.usautoparts.com_git/application/layouts/scripts/partials/menu.phtml
+	
+	# Echo the result
+	/var/www/html/me.usaptool.dev.usautoparts.com_git/application/layouts/scripts/layout.phtml
+
+	# DCMS Bootstrap
+	DCMS :	/var/www/html/Dcms_template/Bootstrap.php
+
+
+My Action :
+
+	cd /var/www/html
+	sudo cp -r Dcms_ell sitemap_generator
+	cd /var/www/html/sitemap_generator/
+	cd /var/www/html/me.usaptool.dev.usautoparts.com_git/application/external/modules
+*	ln -s /var/www/html/sitemap_generator Sitemap
+
+	go to /var/www/html/sitemap_generator
